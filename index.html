@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>QuickDrop — Free everyday web utilities</title>
+<meta name="description" content="Free, private, in-browser tools: JSON formatter, text converter, Markdown previewer, password generator.">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self'; script-src 'self' 'unsafe-inline'; img-src 'self' data:">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%232563eb'/%3E%3Cpath d='M16 7v12m0 0-5-5m5 5 5-5M9 24h14' stroke='white' stroke-width='2.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<script>try{var t=localStorage.getItem('qd-theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');document.documentElement.dataset.theme=t}catch(e){}</script>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-header">
+  <a class="brand" href="#/" aria-label="QuickDrop home">⬇ QuickDrop</a>
+  <nav aria-label="Tools">
+    <a href="#/json">JSON</a><a href="#/text">Text</a><a href="#/markdown">Markdown</a><a href="#/password">Password</a>
+  </nav>
+  <button id="theme-toggle" class="btn ghost" type="button" aria-label="Switch to dark theme">◐</button>
+</header>
+
+<main id="main">
+  <section id="view-home" data-view="home">
+    <h1 tabindex="-1">Everyday tools. <span class="accent">No sign-up, no uploads.</span></h1>
+    <p class="lead">Everything runs in your browser. What you type never leaves your device.</p>
+    <label class="visually-hidden" for="search">Search tools</label>
+    <input id="search" type="search" placeholder="Search tools (e.g. json, password)…" autocomplete="off">
+    <div id="cards" class="cards">
+      <a class="card" href="#/json" data-keywords="json format validate beautify minify developer"><h2>JSON Formatter</h2><p>Format, minify and validate JSON with clear error locations.</p></a>
+      <a class="card" href="#/text" data-keywords="text case upper lower title sentence word count character"><h2>Text Converter</h2><p>Change case and count words and characters.</p></a>
+      <a class="card" href="#/markdown" data-keywords="markdown preview md writer readme"><h2>Markdown Previewer</h2><p>Write Markdown and see a safe live preview.</p></a>
+      <a class="card" href="#/password" data-keywords="password generator secure random crypto security"><h2>Password Generator</h2><p>Strong passwords from the Web Crypto API.</p></a>
+    </div>
+    <p id="no-results" class="empty" hidden>No tools match your search. Try “json” or “password”.</p>
+  </section>
+
+  <section id="view-json" data-view="json" hidden>
+    <a class="back" href="#/">← All tools</a>
+    <h1 tabindex="-1">JSON Formatter &amp; Validator</h1>
+    <label for="json-in">JSON input</label>
+    <textarea id="json-in" rows="12" spellcheck="false" placeholder='{"hello": "world"}'></textarea>
+    <div class="row">
+      <label for="json-indent" class="inline">Indent</label>
+      <select id="json-indent"><option value="2">2 spaces</option><option value="4">4 spaces</option><option value="tab">Tab</option></select>
+      <button id="json-format" class="btn primary" type="button">Format</button>
+      <button id="json-minify" class="btn" type="button">Minify</button>
+      <button id="json-copy" class="btn" type="button">Copy</button>
+      <button id="json-clear" class="btn ghost" type="button">Clear</button>
+    </div>
+    <div id="json-status" class="status" role="status" aria-live="polite">Paste JSON above, then press Format.</div>
+  </section>
+
+  <section id="view-text" data-view="text" hidden>
+    <a class="back" href="#/">← All tools</a>
+    <h1 tabindex="-1">Text Converter</h1>
+    <label for="text-in">Your text</label>
+    <textarea id="text-in" rows="10" placeholder="Type or paste text…"></textarea>
+    <div class="row">
+      <button class="btn primary" type="button" data-case="upper">UPPERCASE</button>
+      <button class="btn primary" type="button" data-case="lower">lowercase</button>
+      <button class="btn primary" type="button" data-case="title">Title Case</button>
+      <button class="btn primary" type="button" data-case="sentence">Sentence case</button>
+      <button id="text-copy" class="btn" type="button">Copy</button>
+      <button id="text-clear" class="btn ghost" type="button">Clear</button>
+    </div>
+    <dl class="stats" aria-live="polite">
+      <div><dt>Words</dt><dd id="st-words">0</dd></div><div><dt>Characters</dt><dd id="st-chars">0</dd></div>
+      <div><dt>No spaces</dt><dd id="st-nospace">0</dd></div><div><dt>Lines</dt><dd id="st-lines">0</dd></div>
+    </dl>
+  </section>
+
+  <section id="view-markdown" data-view="markdown" hidden>
+    <a class="back" href="#/">← All tools</a>
+    <h1 tabindex="-1">Markdown Previewer</h1>
+    <div class="row">
+      <button id="md-copy" class="btn" type="button">Copy Markdown</button>
+      <button id="md-clear" class="btn ghost" type="button">Clear</button>
+    </div>
+    <div class="split">
+      <div><label for="md-in">Markdown</label><textarea id="md-in" rows="16" spellcheck="false" placeholder="# Hello&#10;Write **Markdown** here…"></textarea></div>
+      <div><span class="label" id="md-label">Preview</span><div id="md-out" class="preview" role="region" aria-labelledby="md-label"></div></div>
+    </div>
+  </section>
+
+  <section id="view-password" data-view="password" hidden>
+    <a class="back" href="#/">← All tools</a>
+    <h1 tabindex="-1">Password Generator</h1>
+    <label for="pw-out">Generated password</label>
+    <div class="row nowrap">
+      <input id="pw-out" type="text" readonly class="mono" placeholder="Press Generate">
+      <button id="pw-copy" class="btn" type="button">Copy</button>
+    </div>
+    <div class="row">
+      <label for="pw-len" class="inline">Length: <output id="pw-len-val" for="pw-len">16</output></label>
+      <input id="pw-len" type="range" min="4" max="128" value="16">
+    </div>
+    <fieldset>
+      <legend>Character types</legend>
+      <label class="check"><input type="checkbox" id="pw-lower" checked> Lowercase (a–z)</label>
+      <label class="check"><input type="checkbox" id="pw-upper" checked> Uppercase (A–Z)</label>
+      <label class="check"><input type="checkbox" id="pw-digits" checked> Numbers (0–9)</label>
+      <label class="check"><input type="checkbox" id="pw-symbols" checked> Symbols (!@#…)</label>
+      <label class="check"><input type="checkbox" id="pw-ambig"> Exclude look-alikes (I l 1 O 0)</label>
+    </fieldset>
+    <button id="pw-generate" class="btn primary" type="button">Generate</button>
+    <div id="pw-status" class="status" role="status" aria-live="polite"></div>
+  </section>
+</main>
+
+<footer class="site-footer">QuickDrop runs entirely in your browser. No tracking, no servers.</footer>
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+<script src="js/tools/json.js"></script>
+<script src="js/tools/text.js"></script>
+<script src="js/tools/markdown.js"></script>
+<script src="js/tools/password.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
